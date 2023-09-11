@@ -1,4 +1,4 @@
-# React + TypeScript + Vite + Redux Toolkit
+# React + TypeScript + Vite + Redux Toolkit + Bootstrap
 
 ## Ivan Sychev
 
