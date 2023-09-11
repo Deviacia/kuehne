@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
-import { Table } from 'reactstrap';
-import { useAppDispatch, useAppSelector } from '@/shared/model/useRedux';
-import { OrderItem, type Order } from '@/entities/order';
-import { fetchOrders } from '@/entities/order/model/slice';
+import { Table } from 'react-bootstrap';
+import { DeleteOrderButton } from '@/features/order/delete';
+import { ShowDetailsButton } from '@/features/order/details';
+import { OrderItem, type Order, fetchOrders } from '@/entities/order';
+import { useAppDispatch, useAppSelector } from '@/shared';
 
 export const OrderList = () => {
   const dispatch = useAppDispatch();
@@ -22,16 +23,24 @@ export const OrderList = () => {
           <th>TrackingNo</th>
           <th>Status</th>
           <th>Consignee</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
-        {orders.map((order) => (
-          <tr key={order.orderNo}>
-            <OrderItem order={order} />
-            <td>btn 1</td>
-            <td>btn 2</td>
-          </tr>
-        ))}
+        {!orders
+          ? null
+          : orders.map((order) => (
+              <OrderItem
+                key={order.orderNo}
+                order={order}
+                actionSlot={
+                  <>
+                    <DeleteOrderButton order={order} />
+                    <ShowDetailsButton order={order} />
+                  </>
+                }
+              />
+            ))}
       </tbody>
     </Table>
   );

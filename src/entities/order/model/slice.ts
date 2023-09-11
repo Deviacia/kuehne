@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { ordersApi } from '../api/ordersApi';
 import { type Order } from './types';
 
@@ -10,7 +10,7 @@ type OrdersSliceState = {
 
 export const fetchOrders = createAsyncThunk<Order[]>(
   'orders/fetchOrders',
-  ordersApi,
+  ordersApi
 );
 
 const initialState: OrdersSliceState = {
@@ -22,16 +22,33 @@ const initialState: OrdersSliceState = {
 export const orderSlice = createSlice({
   name: 'orders',
   initialState,
-  reducers: {},
+  reducers: {
+    deleteOrder(state, action: PayloadAction<Order>) {
+      state.orders = state.orders.filter(
+        (order) => order.orderNo !== action.payload.orderNo
+      );
+    },
+    // editOrder(state, action: PayloadAction<Order>) {
+    //   state.orders = state.orders.map((order) => {
+    //     if (order.orderNo !== action.payload.orderNo) return order;
+
+    //     return (order = action.payload);
+    //   });
+    // },
+  },
   extraReducers(builder) {
     builder
       .addCase(fetchOrders.pending, (state) => {
         state.status = 'loading';
+        state.orders = new Array(6);
       })
-      .addCase(fetchOrders.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.orders = state.orders.concat(action.payload);
-      })
+      .addCase(
+        fetchOrders.fulfilled,
+        (state, action: PayloadAction<Order[]>) => {
+          state.status = 'succeeded';
+          state.orders = action.payload;
+        }
+      )
       .addCase(fetchOrders.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message as string;
@@ -39,6 +56,5 @@ export const orderSlice = createSlice({
   },
 });
 
-// export const {} = orderSlice.actions;
-
+export const { deleteOrder } = orderSlice.actions;
 export const orderReducer = orderSlice.reducer;
