@@ -3,5 +3,6 @@
 ## Ivan Sychev
 
 ```js
+   npm i
    npm run start:dev
 ```
